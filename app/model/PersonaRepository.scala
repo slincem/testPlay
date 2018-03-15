@@ -25,12 +25,10 @@ class PersonaRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
 
   def all(): Future[Seq[Persona]] = db.run(persona.result)
   def byId(id:Long):Future[Seq[Persona]]=db.run(persona.filter(_.id===id).result)
-
-
-
-
-
- // def get(id: Long): Future[Option[Persona]]=db.run(persona.filter(_.id == id).result.headOption)//db.run(persona.filter(_.id == id)).result.headOption
+  val schema = persona.schema
+  db.run(DBIO.seq(
+    schema.create
+  ))
 
   private class PersonaTable(tag: Tag) extends Table[Persona](tag, "persona") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
